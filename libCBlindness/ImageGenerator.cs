@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -41,13 +40,8 @@ namespace libCBlindness
             _phases.Add(new RandomNoncolidingPaleteDots(5, 10, 0.0f));
 
             var context = new GeneratorContext(mask);
-            foreach (var phase in _phases)
-            {
-                phase.Apply(mask.Width, mask.Height, context);
-            }
 
-            context.SaveCirclesToFile(new FileInfo("d:\\circles.dmp"));
-
+            var image = context.CreateImage(_phases.ToArray());
 
             using (var g = Graphics.FromImage(result))
             {
@@ -58,10 +52,9 @@ namespace libCBlindness
                 g.SmoothingMode = SmoothingMode.HighQuality;
              
                 g.Clear(Color.WhiteSmoke);
-                   
-                context.Apply(g);                
-
-
+                  
+                image.Apply(g); 
+            
             }
 
             return result;

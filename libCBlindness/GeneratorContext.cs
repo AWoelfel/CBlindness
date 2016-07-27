@@ -1,15 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using libCBlindness.ColorPaletes;
+using libCBlindness.Phases;
 
 namespace libCBlindness
 {
     public class GeneratorContext
     {
-        private List<Circle> Circles { get; set; } = new List<Circle>();
+        private ImageDescriptor Image;
         private Bitmap _mask;
 
 
@@ -30,13 +29,13 @@ namespace libCBlindness
 
         public bool WillIntersect(Circle c, float minDistance = 0f)
         {
-            return Circles.Any(x => x.Intersect(c, minDistance));
+            return Image.Any(x => x.Intersect(c, minDistance));
         }
 
         public float? ResolveMinDistanceToOthers(Point p)
         {
             return
-                Circles.Select(c => new {Circle = c, Distance = p.Distance(c) - c.Rad})
+                Image.Select(c => new {Circle = c, Distance = p.Distance(c) - c.Rad})
                     .OrderBy(x => x.Distance)
                     .FirstOrDefault()?.Distance;
         }
@@ -65,38 +64,29 @@ namespace libCBlindness
             return RandomPositiveColor;
         }
 
-        public void AddCircle(Circle c)
-        {
-            Circles.Add(c);
-        }
 
-        public void Apply(Graphics g)
+
+        public ImageDescriptor CreateImage(params IImageGeneratorPhase[] phases)
         {
-            foreach (var c in Circles)
+            Image = new ImageDescriptor();
+            foreach (var imageGeneratorPhase in phases)
             {
-                g.FillEllipse(new SolidBrush(c.C), c.X - c.Rad, c.Y - c.Rad, c.Rad * 2, c.Rad * 2);
+                imageGeneratorPhase.Apply(_mask.Width, _mask.Height, this);
             }
+
+
+            return Image;
+
         }
 
-        public void SaveCirclesToFile(FileInfo file)
+
+        public void AddCircle(Circle lastDrawnCircle)
         {
-            using (var oFile = file.OpenWrite())
-            {
-                var serializer = new BinaryFormatter();
 
-                serializer.Serialize(oFile, Circles);
-            }
+            if (Image == null)
+                throw new NotSupportedException();
+
+            Image.Add(lastDrawnCircle);
         }
-
-        public void LoadCirclesFromFile(FileInfo file)
-        {
-            using (var iFile = file.OpenRead())
-            {
-                var serializer = new BinaryFormatter();
-
-                Circles = serializer.Deserialize(iFile) as List<Circle>;
-            }
-        }
-
     }
 }

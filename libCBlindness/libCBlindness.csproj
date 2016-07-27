@@ -45,6 +45,7 @@
     <Compile Include="Circle.cs" />
     <Compile Include="GeneratorContext.cs" />
     <Compile Include="IColorPalete.cs" />
+    <Compile Include="ImageDescriptor.cs" />
     <Compile Include="ImageGenerator.cs" />
     <Compile Include="Phases\BaseCircleGenerator.cs" />
     <Compile Include="Phases\EmptySegmentFillingPaleteDots.cs" />
