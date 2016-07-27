@@ -14,7 +14,7 @@ namespace libCBlindness.Phases
                 var x = context.Rnd.NextFloat(0, width - size);
                 var y = context.Rnd.NextFloat(0, height - size);
 
-                context.AddCircle(new Circle(x, y, size / 2, context.RandomPositiveColor));
+                context.AddCircle(new Circle(x, y, size / 2), context.RandomPositiveColor);
             }
         }
 

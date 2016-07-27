@@ -8,18 +8,16 @@ namespace libCBlindness
     [Serializable]
     public class Circle
     {
-        public Circle(float x, float y, float rad, Color c)
+        public Circle(float x, float y, float rad)
         {
             X = x;
             Y = y;
             Rad = rad;
-            C = c;
         }
 
         public float X { get; }
         public float Y { get; }
         public float Rad { get; }
-        public Color C { get; set; }
 
         public bool Intersect(Circle c, float minDistance = 0f)
         {

@@ -29,15 +29,12 @@ namespace libCBlindness
 
         public bool WillIntersect(Circle c, float minDistance = 0f)
         {
-            return Image.Any(x => x.Intersect(c, minDistance));
+            return Image.WillIntersect(c, minDistance);
         }
 
         public float? ResolveMinDistanceToOthers(Point p)
         {
-            return
-                Image.Select(c => new {Circle = c, Distance = p.Distance(c) - c.Rad})
-                    .OrderBy(x => x.Distance)
-                    .FirstOrDefault()?.Distance;
+            return Image.ResolveMinDistanceToOthers(p);
         }
 
         public bool IsOnMask(int x, int y)
@@ -68,25 +65,34 @@ namespace libCBlindness
 
         public ImageDescriptor CreateImage(params IImageGeneratorPhase[] phases)
         {
-            Image = new ImageDescriptor();
+            Image = new ImageDescriptor(_mask.Size);
             foreach (var imageGeneratorPhase in phases)
             {
                 imageGeneratorPhase.Apply(_mask.Width, _mask.Height, this);
             }
 
-
             return Image;
-
         }
 
 
-        public void AddCircle(Circle lastDrawnCircle)
+        public void AddCircle(Circle circleToAdd, Color c)
         {
 
             if (Image == null)
                 throw new NotSupportedException();
 
-            Image.Add(lastDrawnCircle);
+            Image.Add(circleToAdd, c);
         }
+
+        public void AddCircle(Circle circleToAdd)
+        {
+
+            if (Image == null)
+                throw new NotSupportedException();
+
+            AddCircle(circleToAdd, RandomColorForPixel((int)circleToAdd.X, (int)circleToAdd.Y));
+        }
+
     }
+
 }
