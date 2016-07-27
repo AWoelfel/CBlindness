@@ -30,18 +30,27 @@ namespace libCBlindness
 
             var result = new Bitmap(mask.Width, mask.Height, PixelFormat.Format32bppArgb);
 
+            _phases.Add(new RandomNoncolidingPaleteDots(10, 20, 0.0f));
+            _phases.Add(new RandomNoncolidingPaleteDots(10, 20, 0.0f));
+            _phases.Add(new RandomNoncolidingPaleteDots(10, 20, 0.0f));
+            _phases.Add(new RandomNoncolidingPaleteDots(10, 20, 0.0f));
+            _phases.Add(new RandomNoncolidingPaleteDots(10, 20, 0.0f));
+            _phases.Add(new RandomNoncolidingPaleteDots(5, 10, 0.0f));
+            _phases.Add(new RandomNoncolidingPaleteDots(5, 10, 0.0f));
+            _phases.Add(new RandomNoncolidingPaleteDots(5, 10, 0.0f));
+            _phases.Add(new RandomNoncolidingPaleteDots(5, 10, 0.0f));
 
-            //_phases.Add(new RandomNoncolidingPaleteDots(10, 16, 0.5f));
-            //_phases.Add(new RandomNoncolidingPaleteDots(6, 8, 0.5f));
-            _phases.Add(new RandomNoncolidingPaleteDots(4, 6, 0.5f));
-            _phases.Add(new RandomNoncolidingPaleteDots(1, 2, 0.5f));
-            /*            _phases.Add(new EmptySegmentFillingPaleteDots(6, 8, 0.5f));
-                                                _phases.Add(new EmptySegmentFillingPaleteDots(4, 6, 0.5f));
-                                                _phases.Add(new EmptySegmentFillingPaleteDots(1, 2, 0.5f));
-                                                */
+            var context = new GeneratorContext(mask);
+            foreach (var phase in _phases)
+            {
+                phase.Apply(mask.Width, mask.Height, context);
+            }
+
+            context.SaveCirclesToFile(new FileInfo("d:\\circles.dmp"));
+
+
             using (var g = Graphics.FromImage(result))
             {
-                var context = new GeneratorContext(g, mask);
 
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 g.CompositingQuality = CompositingQuality.HighQuality;
@@ -50,12 +59,9 @@ namespace libCBlindness
              
                 g.Clear(Color.WhiteSmoke);
                    
-                
+                context.Apply(g);                
 
-                foreach (var phase in _phases)
-                {
-                    phase.Apply(mask.Width, mask.Height, context);
-                }
+
             }
 
             return result;

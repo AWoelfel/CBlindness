@@ -49,8 +49,8 @@ namespace libCBlindness.Phases
                     if (targetCircleSize > MinCircleSize)
                     {
                         lastDrawnCircle = new Circle(p.X, p.Y,
-                            context.Rnd.NextFloat(MinCircleSize, Math.Min(targetCircleSize, MaxCircleSize)));
-                        context.AddCircle(lastDrawnCircle, context.RandomColorForPixel(p.X, p.Y));
+                            context.Rnd.NextFloat(MinCircleSize, Math.Min(targetCircleSize, MaxCircleSize)), context.RandomColorForPixel(p.X, p.Y));
+                        context.AddCircle(lastDrawnCircle);
                     }
                 }
             }

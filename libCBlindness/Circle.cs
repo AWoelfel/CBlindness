@@ -5,18 +5,21 @@ using libCBlindness.Phases;
 
 namespace libCBlindness
 {
+    [Serializable]
     public class Circle
     {
-        public Circle(float x, float y, float rad)
+        public Circle(float x, float y, float rad, Color c)
         {
             X = x;
             Y = y;
             Rad = rad;
+            C = c;
         }
 
         public float X { get; }
         public float Y { get; }
         public float Rad { get; }
+        public Color C { get; set; }
 
         public bool Intersect(Circle c, float minDistance = 0f)
         {

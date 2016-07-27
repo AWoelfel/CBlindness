@@ -23,7 +23,7 @@ namespace libCBlindness.Phases
                     var x = context.Rnd.NextFloat(0, width - rad*2) + rad;
                     var y = context.Rnd.NextFloat(0, height - rad*2) + rad;
 
-                    target = new Circle(x,y, rad);
+                    target = new Circle(x,y, rad, context.RandomColorForPixel((int)x, (int)y));
 
                     if (context.WillIntersect(target, MinDistance))
                     {
@@ -43,7 +43,7 @@ namespace libCBlindness.Phases
                     continue;
                 }
 
-                context.AddCircle(target, context.RandomColorForPixel((int) target.X, (int) target.Y));
+                context.AddCircle(target);
             }
         }
 

@@ -8,11 +8,11 @@ namespace CBlindnessTest
     {
         static void Main(string[] args)
         {
-            var gen = new ImageGenerator(Image.FromFile(@"D:\Hearts.png"));
+            var gen = new ImageGenerator(Image.FromFile(@"D:\CardMask.png"));
 
             var result = gen.Generate();
 
-            ImageUtils.SaveImage(result,  new FileInfo(@"D:\HeartsCB.png"));
+            ImageUtils.SaveImage(result,  new FileInfo(@"D:\CBCardMask.png"));
             
 
         }

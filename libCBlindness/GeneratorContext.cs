@@ -1,55 +1,29 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
+using System.Runtime.Serialization.Formatters.Binary;
 using libCBlindness.ColorPaletes;
 
 namespace libCBlindness
 {
     public class GeneratorContext
     {
-        private sealed class XYRadEqualityComparer : IEqualityComparer<Circle>
-        {
-            public bool Equals(Circle x, Circle y)
-            {
-                if (ReferenceEquals(x, y)) return true;
-                if (ReferenceEquals(x, null)) return false;
-                if (ReferenceEquals(y, null)) return false;
-                if (x.GetType() != y.GetType()) return false;
-                return x.X.Equals(y.X) && x.Y.Equals(y.Y) && x.Rad.Equals(y.Rad);
-            }
-
-            public int GetHashCode(Circle obj)
-            {
-                unchecked
-                {
-                    var hashCode = obj.X.GetHashCode();
-                    hashCode = (hashCode * 397) ^ obj.Y.GetHashCode();
-                    hashCode = (hashCode * 397) ^ obj.Rad.GetHashCode();
-                    return hashCode;
-                }
-            }
-        }
-
-        private HashSet<Circle> Circles { get; } = new HashSet<Circle>(new XYRadEqualityComparer());
+        private List<Circle> Circles { get; set; } = new List<Circle>();
         private Bitmap _mask;
 
 
-        public GeneratorContext(Graphics g, Image mask)
+        public GeneratorContext(Image mask)
         {
             
 
             _mask = new Bitmap(mask);
             Rnd = new PseudoRandomNumberGen();
             ColorPalete = new RedGreenColorPalete();
-            G = g;
         }
 
         public IRandomGen Rnd { get; }
         public IColorPalete ColorPalete { get; }
-
-        public Graphics G { get; }
 
         public Color RandomPositiveColor => ColorPalete.PositiveColors.TakeRandom(Rnd);
         public Color RandomNegativeColor => ColorPalete.NegativeColors.TakeRandom(Rnd);
@@ -78,7 +52,7 @@ namespace libCBlindness
         {
             var tendence = IsOnMask(x, y);
 
-            if (Rnd.NextFloat() < .05)
+            if (Rnd.NextFloat() < .025)
                 tendence = !tendence;
 
 
@@ -91,12 +65,38 @@ namespace libCBlindness
             return RandomPositiveColor;
         }
 
-        public void AddCircle(Circle c, Color color)
+        public void AddCircle(Circle c)
         {
             Circles.Add(c);
-            G.FillEllipse(new SolidBrush(color), c.X- c.Rad, c.Y- c.Rad, c.Rad * 2, c.Rad * 2);
         }
 
+        public void Apply(Graphics g)
+        {
+            foreach (var c in Circles)
+            {
+                g.FillEllipse(new SolidBrush(c.C), c.X - c.Rad, c.Y - c.Rad, c.Rad * 2, c.Rad * 2);
+            }
+        }
+
+        public void SaveCirclesToFile(FileInfo file)
+        {
+            using (var oFile = file.OpenWrite())
+            {
+                var serializer = new BinaryFormatter();
+
+                serializer.Serialize(oFile, Circles);
+            }
+        }
+
+        public void LoadCirclesFromFile(FileInfo file)
+        {
+            using (var iFile = file.OpenRead())
+            {
+                var serializer = new BinaryFormatter();
+
+                Circles = serializer.Deserialize(iFile) as List<Circle>;
+            }
+        }
 
     }
 }
