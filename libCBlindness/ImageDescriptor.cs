@@ -72,6 +72,14 @@ namespace libCBlindness
             return result;
         }
 
+        public void ReplaceColor(Color from, Color to)
+        {
+            if (colors.Contains(from))
+            {
+                var idx = colors.IndexOf(from);
+                colors[idx] = to;
+            }
+        }
 
 
         private int ResolveColorIndex(Color c)

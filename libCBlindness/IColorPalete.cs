@@ -5,7 +5,6 @@ namespace libCBlindness
 {
     public interface IColorPalete
     {
-        IReadOnlyList<Color> PositiveColors { get; }
-        IReadOnlyList<Color> NegativeColors { get; }
+        IReadOnlyList<Color> GetPosibleColors(Color maskColor);
     }
 }

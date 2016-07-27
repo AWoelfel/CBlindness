@@ -1,5 +1,9 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
+using System.Linq;
 using libCBlindness;
 using libCBlindness.Phases;
 
@@ -9,6 +13,34 @@ namespace CBlindnessTest
     {
         static void Main(string[] args)
         {
+
+            var settings = new IImageGeneratorPhase[]
+{
+                    new RandomNoncolidingPaleteDots(10, 20, 0.0f),
+                    new RandomNoncolidingPaleteDots(10, 20, 0.0f),
+                    new RandomNoncolidingPaleteDots(10, 20, 0.0f),
+                    new RandomNoncolidingPaleteDots(10, 20, 0.0f),
+                    new RandomNoncolidingPaleteDots(10, 20, 0.0f),
+                    new RandomNoncolidingPaleteDots(5, 10, 0.0f),
+                    new RandomNoncolidingPaleteDots(5, 10, 0.0f),
+                    new RandomNoncolidingPaleteDots(5, 10, 0.0f),
+                    new RandomNoncolidingPaleteDots(5, 10, 0.0f)
+};
+
+            var gen = new ImageGenerator(Image.FromFile(@"D:\CardMask.png"));
+
+            /*
+            foreach (var i in Enumerable.Range(0, 25))
+            {
+                Console.WriteLine($"Generation {i}");
+                
+
+                ImageUtils.SaveImage(ImageDescriptor.LoadFromFile(new FileInfo($@"D:\animation{i}.dmp")).CreateImage(), new FileInfo($@"D:\animation{i}.png"));
+
+            }
+
+            return;
+            */
             var descriptorSave = new FileInfo(@"D:\CBCardDescriptor");
 
             ImageDescriptor imageDescriptor;
@@ -19,25 +51,33 @@ namespace CBlindnessTest
             }
             else
             {
-                var gen = new ImageGenerator(Image.FromFile(@"D:\CardMask.png"));
-                imageDescriptor = gen.Generate(new RandomNoncolidingPaleteDots(10, 20, 0.0f),
-                                          new RandomNoncolidingPaleteDots(10, 20, 0.0f),
-                                          new RandomNoncolidingPaleteDots(10, 20, 0.0f),
-                                          new RandomNoncolidingPaleteDots(10, 20, 0.0f),
-                                          new RandomNoncolidingPaleteDots(10, 20, 0.0f),
-                                          new RandomNoncolidingPaleteDots(5, 10, 0.0f),
-                                          new RandomNoncolidingPaleteDots(5, 10, 0.0f),
-                                          new RandomNoncolidingPaleteDots(5, 10, 0.0f),
-                                          new RandomNoncolidingPaleteDots(5, 10, 0.0f));
-
+                imageDescriptor = gen.Generate(settings);
                 imageDescriptor.SaveToFile(descriptorSave);
             }
 
+            var cConverter = new ColorConverter();
+
+            /*
+ 
 
 
 
-            ImageUtils.SaveImage(imageDescriptor.CreateImage(),  new FileInfo(@"D:\CBCardMask.png"));
+
+
+*/
             
+            ImageUtils.SaveImage(imageDescriptor.CreateImage(),  new FileInfo(@"D:\CBCardMask_A.png"));
+
+            imageDescriptor.ReplaceColor((Color)cConverter.ConvertFromString("#FFFFFF"), (Color)cConverter.ConvertFromString("#9CA594"));
+            imageDescriptor.ReplaceColor((Color)cConverter.ConvertFromString("#FEFEFE"), (Color)cConverter.ConvertFromString("#ACB4A5"));
+            imageDescriptor.ReplaceColor((Color)cConverter.ConvertFromString("#FDFDFD"), (Color)cConverter.ConvertFromString("#BBB964"));
+            imageDescriptor.ReplaceColor((Color)cConverter.ConvertFromString("#FCFCFC"), (Color)cConverter.ConvertFromString("#D7DAAA"));
+            imageDescriptor.ReplaceColor((Color)cConverter.ConvertFromString("#FBFBFB"), (Color)cConverter.ConvertFromString("#E5D57D"));
+            imageDescriptor.ReplaceColor((Color)cConverter.ConvertFromString("#FAFAFA"), (Color)cConverter.ConvertFromString("#D1D6AF"));
+
+
+            ImageUtils.SaveImage(imageDescriptor.CreateImage(), new FileInfo(@"D:\CBCardMask_B.png"));
+
 
         }
 

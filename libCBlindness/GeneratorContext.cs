@@ -14,8 +14,6 @@ namespace libCBlindness
 
         public GeneratorContext(Image mask)
         {
-            
-
             _mask = new Bitmap(mask);
             Rnd = new PseudoRandomNumberGen();
             ColorPalete = new RedGreenColorPalete();
@@ -23,9 +21,6 @@ namespace libCBlindness
 
         public IRandomGen Rnd { get; }
         public IColorPalete ColorPalete { get; }
-
-        public Color RandomPositiveColor => ColorPalete.PositiveColors.TakeRandom(Rnd);
-        public Color RandomNegativeColor => ColorPalete.NegativeColors.TakeRandom(Rnd);
 
         public bool WillIntersect(Circle c, float minDistance = 0f)
         {
@@ -46,19 +41,7 @@ namespace libCBlindness
 
         public Color RandomColorForPixel(int x, int y)
         {
-            var tendence = IsOnMask(x, y);
-
-            if (Rnd.NextFloat() < .025)
-                tendence = !tendence;
-
-
-            if (tendence)
-            {
-                return RandomNegativeColor;
-            }
-                
-
-            return RandomPositiveColor;
+            return ColorPalete.GetPosibleColors(_mask.GetPixel(x, y)).TakeRandom(Rnd);
         }
 
 
