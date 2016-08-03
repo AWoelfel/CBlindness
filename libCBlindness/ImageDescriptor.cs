@@ -15,12 +15,10 @@ namespace libCBlindness
     public class ImageDescriptor : List<CircleInfo>
     {
         private readonly Size _imageSize;
-        private List<Color> colors;
 
         public ImageDescriptor(Size imageSize)
         {
             _imageSize = imageSize;
-            colors = new List<Color>();
         }
 
         public void SaveToFile(FileInfo file)
@@ -43,17 +41,19 @@ namespace libCBlindness
             }
         }
 
-        public void Apply(Graphics g)
+        public void Apply(Graphics g, IColorPalete colorPalete, IRandomGen rnd)
         {
             foreach (var c in this)
             {
-                g.FillEllipse(new SolidBrush(colors[c.ColorIdx]), c.Circle.X - c.Circle.Rad, c.Circle.Y - c.Circle.Rad, c.Circle.Rad * 2, c.Circle.Rad * 2);
+                g.FillEllipse(new SolidBrush(colorPalete.GetPosibleColors(c.MaskColor).TakeRandom(rnd)), c.Circle.X - c.Circle.Rad, c.Circle.Y - c.Circle.Rad, c.Circle.Rad * 2, c.Circle.Rad * 2);
             }
         }
 
-        public Image CreateImage()
+        public Image CreateImage(IColorPalete colorPalette)
         {
             var result = new Bitmap(_imageSize.Width, _imageSize.Height, PixelFormat.Format32bppArgb);
+
+            var rnd = new PseudoRandomNumberGen();
 
             using (var g = Graphics.FromImage(result))
             {
@@ -65,38 +65,17 @@ namespace libCBlindness
 
                 g.Clear(Color.WhiteSmoke);
 
-                Apply(g);
+                Apply(g, colorPalette, rnd);
 
             }
 
             return result;
         }
 
-        public void ReplaceColor(Color from, Color to)
-        {
-            if (colors.Contains(from))
-            {
-                var idx = colors.IndexOf(from);
-                colors[idx] = to;
-            }
-        }
-
-
-        private int ResolveColorIndex(Color c)
-        {
-            if (!colors.Contains(c))
-            {
-                //new
-                colors.Add(c);
-            }
-
-
-            return colors.IndexOf(c);
-        }
 
         public void Add(Circle c, Color color)
         {
-            this.Add(new CircleInfo (c, ResolveColorIndex(color)));   
+            Add(new CircleInfo (c, color));   
         }
 
         public bool WillIntersect(Circle c, float minDistance = 0f)
@@ -113,25 +92,24 @@ namespace libCBlindness
     [Serializable]
     public class CircleInfo
     {
-        public CircleInfo(Circle circle, int colorIdx)
+        public CircleInfo(Circle circle, Color maskColor)
         {
             this.circle = circle;
-            this.colorIdx = colorIdx;
+            this.maskColor = maskColor;
         }
 
         Circle circle;
+        private readonly Color maskColor;
 
         public Circle Circle
         {
             get { return circle; }
         }
 
-        public int ColorIdx
+        public Color MaskColor
         {
-            get { return colorIdx; }
+            get { return maskColor; }
         }
-
-        int colorIdx;
 
     }
 

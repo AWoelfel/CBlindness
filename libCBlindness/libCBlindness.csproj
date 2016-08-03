@@ -55,7 +55,6 @@
     <Compile Include="Phases\RandomNoncolidingPaleteDots.cs" />
     <Compile Include="Phases\RandomRedDots.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ColorPaletes\RedGreenColorPalete.cs" />
     <Compile Include="PseudoRandomNumberGen.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>

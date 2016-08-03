@@ -29,7 +29,7 @@ namespace CBlindnessTest
 
             var gen = new ImageGenerator(Image.FromFile(@"D:\CardMask.png"));
 
-            /*
+            /*  
             foreach (var i in Enumerable.Range(0, 25))
             {
                 Console.WriteLine($"Generation {i}");
@@ -45,7 +45,7 @@ namespace CBlindnessTest
 
             ImageDescriptor imageDescriptor;
 
-            if (descriptorSave.Exists)
+            if (descriptorSave.Exists && false)
             {
                 imageDescriptor = ImageDescriptor.LoadFromFile(descriptorSave);
             }
@@ -55,28 +55,8 @@ namespace CBlindnessTest
                 imageDescriptor.SaveToFile(descriptorSave);
             }
 
-            var cConverter = new ColorConverter();
-
-            /*
- 
-
-
-
-
-
-*/
-            
-            ImageUtils.SaveImage(imageDescriptor.CreateImage(),  new FileInfo(@"D:\CBCardMask_A.png"));
-
-            imageDescriptor.ReplaceColor((Color)cConverter.ConvertFromString("#FFFFFF"), (Color)cConverter.ConvertFromString("#9CA594"));
-            imageDescriptor.ReplaceColor((Color)cConverter.ConvertFromString("#FEFEFE"), (Color)cConverter.ConvertFromString("#ACB4A5"));
-            imageDescriptor.ReplaceColor((Color)cConverter.ConvertFromString("#FDFDFD"), (Color)cConverter.ConvertFromString("#BBB964"));
-            imageDescriptor.ReplaceColor((Color)cConverter.ConvertFromString("#FCFCFC"), (Color)cConverter.ConvertFromString("#D7DAAA"));
-            imageDescriptor.ReplaceColor((Color)cConverter.ConvertFromString("#FBFBFB"), (Color)cConverter.ConvertFromString("#E5D57D"));
-            imageDescriptor.ReplaceColor((Color)cConverter.ConvertFromString("#FAFAFA"), (Color)cConverter.ConvertFromString("#D1D6AF"));
-
-
-            ImageUtils.SaveImage(imageDescriptor.CreateImage(), new FileInfo(@"D:\CBCardMask_B.png"));
+            ImageUtils.SaveImage(imageDescriptor.CreateImage(new DefaultColorPalete()),  new FileInfo(@"D:\CBCardMask_A.png"));
+            ImageUtils.SaveImage(imageDescriptor.CreateImage(new RedGreenColorPalete()), new FileInfo(@"D:\CBCardMask_B.png"));
 
 
         }

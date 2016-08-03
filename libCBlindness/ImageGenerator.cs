@@ -19,7 +19,7 @@ namespace libCBlindness
 
         public ImageDescriptor Generate(params IImageGeneratorPhase[] phases)
         {
-            var mask = ImageUtils.ToBnW(_mask);
+            var mask = _mask;
 
             if (Trace)
                 ImageUtils.SaveImage(mask, new FileInfo(@"d:\tmp\bw.png"));

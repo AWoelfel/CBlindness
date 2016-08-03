@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Linq;
-using libCBlindness.ColorPaletes;
 using libCBlindness.Phases;
 
 namespace libCBlindness
@@ -16,11 +14,9 @@ namespace libCBlindness
         {
             _mask = new Bitmap(mask);
             Rnd = new PseudoRandomNumberGen();
-            ColorPalete = new RedGreenColorPalete();
         }
 
         public IRandomGen Rnd { get; }
-        public IColorPalete ColorPalete { get; }
 
         public bool WillIntersect(Circle c, float minDistance = 0f)
         {
@@ -38,12 +34,6 @@ namespace libCBlindness
             var r = Color.Black;
             return col.R == r.R && col.G == r.G && col.B == r.B;
         }
-
-        public Color RandomColorForPixel(int x, int y)
-        {
-            return ColorPalete.GetPosibleColors(_mask.GetPixel(x, y)).TakeRandom(Rnd);
-        }
-
 
 
         public ImageDescriptor CreateImage(params IImageGeneratorPhase[] phases)
@@ -73,7 +63,7 @@ namespace libCBlindness
             if (Image == null)
                 throw new NotSupportedException();
 
-            AddCircle(circleToAdd, RandomColorForPixel((int)circleToAdd.X, (int)circleToAdd.Y));
+            AddCircle(circleToAdd, _mask.GetPixel((int)circleToAdd.X, (int)circleToAdd.Y));
         }
 
     }
