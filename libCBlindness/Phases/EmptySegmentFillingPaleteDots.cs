@@ -13,8 +13,6 @@ namespace libCBlindness.Phases
         {
         }
 
-        private float AverageCircleSize => (MinCircleSize + MaxCircleSize) /2;
-
         private Rectangle CalculateWorkingSpace(int width, int height)
         {
             return new Rectangle(0,0, width , height);

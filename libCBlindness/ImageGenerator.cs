@@ -8,28 +8,16 @@ namespace libCBlindness
 {
     public class ImageGenerator
     {
-        private static bool Trace => true;
-
-        private readonly Image _mask;
+        private readonly Image mask;
 
         public ImageGenerator(Image mask)
         {
-            _mask = mask;
+            this.mask = mask;
         }
 
         public ImageDescriptor Generate(params IImageGeneratorPhase[] phases)
         {
-            var mask = _mask;
-
-            if (Trace)
-                ImageUtils.SaveImage(mask, new FileInfo(@"d:\tmp\bw.png"));
-
-            var context = new GeneratorContext(mask);
-
-            return context.CreateImage(phases);
+            return new GeneratorContext(mask).CreateImage(phases);
         }
-
-
-
     }
 }
